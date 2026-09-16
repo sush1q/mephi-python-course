@@ -80,18 +80,36 @@ def count_long_movies(movies, threshold=120):
             count += 1
     return count
 
+def normalize_title(title):
+    upd_title = []
+    for word in title.split():
+        upd_title.append(word[0].upper() + word[1:])
+    return " ".join(upd_title)
+
+def make_slug(title):
+    return title.lower().replace(" ", "-")
+
+def format_report_line(movie):
+    return f'"{normalize_title(movie.get("title"))}" ({movie.get("year")}) - {movie.get("rating")}/10, {duration_in_hours(movie.get("duration_min"))}, жанры: {", ".join(sorted(movie.get("genres")))}'
+
+
 def main():
     print("Started main")
 
     print(f"Result of average_rating call {average_rating(movies)}")
     print(f"Result of catalog_age_stats call {catalog_age_stats(movies)}")
     print(f"Result of duration_in_hours call {duration_in_hours(movies[0].get("duration_min"))}")
+    
     print(f"Result of rating_tier call {rating_tier(movies[0].get("rating"))}")
     print(f"Result of decade_label call {decade_label(movies[0].get("year"))}")
     
     print_not_comedies(movies)
     print_first_masterpiece(movies)
     print(f"Result of count_long_movies call {count_long_movies(movies)}")
+    
+    print(f"Result of normalize_title call {normalize_title(movies[2].get("title"))}")
+    print(f"Result of make_slug call {make_slug(movies[2].get("title"))}")
+    print(f"Result of format_report_line call {format_report_line(movies[0])}")
     
 
 if __name__ == "__main__":
