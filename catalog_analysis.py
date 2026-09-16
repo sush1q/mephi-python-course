@@ -124,6 +124,23 @@ def get_above_average_movies(movies):
     avg = average_rating(movies)
     return {movie.get("title"): movie.get("rating") for movie in movies if movie.get("rating") > avg}
 
+def all_genres(movies):
+    unique_genres = set()
+    for movie in movies:
+        unique_genres.update(movie.get("genres"))
+    return unique_genres
+
+def common_actors(movie1, movie2):
+    return set(movie1.get("actors")) & set(movie2.get("actors"))
+
+def genres_only_in_one(movies_a, movies_b):
+    genres_a = map(lambda x: x.get("genres"), movies_a)
+    genres_b = map(lambda x: x.get("genres"), movies_b)
+    
+    a = set([j for i in genres_a for j in i])
+    b = set([j for i in genres_b for j in i])
+    return a - b
+
 def main():
     print("Started main")
 
@@ -149,7 +166,9 @@ def main():
     print(f"Result of actor_filmography call {actor_filmography(movies)}")
     print(f"Result of get_above_average_movies call {get_above_average_movies(movies)}")
     
-
+    print(f"Result of all_genres call {all_genres(movies)}")
+    print(f"Result of common_actors call {common_actors(movies[0], movies[3])}")
+    print(f"Result of genres_only_in_one call {genres_only_in_one(movies[5:6], movies[:5])}")
 
 
 if __name__ == "__main__":
