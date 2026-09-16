@@ -104,6 +104,26 @@ def top_n_by_rating(movies, n=3):
             return ret
     return ret
 
+def count_by_genre(movies):
+    ret = {}
+    for movie in movies:
+        for genre in movie.get("genres"):
+            ret[genre] = ret.get(genre, 0) + 1
+    return ret
+
+def actor_filmography(movies):
+    ret = {}
+    for movie in movies:
+        for actor in movie.get("actors"):
+            if actor not in ret:
+                ret[actor] = []
+            ret[actor].append(movie.get("title"))
+    return ret
+
+def get_above_average_movies(movies):
+    avg = average_rating(movies)
+    return {movie.get("title"): movie.get("rating") for movie in movies if movie.get("rating") > avg}
+
 def main():
     print("Started main")
 
@@ -124,6 +144,11 @@ def main():
     
     print(f"Result of titles_sorted_by_rating call {titles_sorted_by_rating(movies)}")
     print(f"Result of top_n_by_rating call {top_n_by_rating(movies)}")
+    
+    print(f"Result of count_by_genre call {count_by_genre(movies)}")
+    print(f"Result of actor_filmography call {actor_filmography(movies)}")
+    print(f"Result of get_above_average_movies call {get_above_average_movies(movies)}")
+    
 
 
 
