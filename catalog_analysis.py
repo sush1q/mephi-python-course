@@ -1,3 +1,5 @@
+import math
+
 movies = [
     {"title": "The Dune Chronicles", "year": 2021, "genres": {"sci-fi", "drama"},
      "rating": 8.6, "duration_min": 155, "actors": ["T. Chalamet", "R. Ferguson", "O. Isaac"]}, # noqa: E501
@@ -20,4 +22,31 @@ movies = [
     {"title": "Red Harbor", "year": 2018, "genres": {"action", "thriller"},
      "rating": 7.3, "duration_min": 129, "actors": ["P. Diaz", "T. Chalamet"]},
 ]
+
+def average_rating(movies):
+    rating_sum = sum([i.get("rating", 0) for i in movies])
+    return round(rating_sum / len(movies), 1)
+
+def catalog_age_stats(movies, current_year=2026): # TODO: получается current_year не обязательна, по подсказке в заданию надо использовать для расчета возраста фильма, но поидее можно сортировкой обойтись
+    movies_sorted = sorted(movies, key=lambda x: x.get("year"))
+    average_year = math.ceil((movies_sorted[0].get("year") + movies_sorted[-1].get("year")) / 2)
+    average_age_film = list(filter(lambda x: x.get("year") == average_year, movies_sorted))
+    
+    return (movies_sorted[0], movies_sorted[-1], average_age_film[0])
+
+def duration_in_hours(minutes):
+    hours = minutes // 60
+    minutes = minutes % 60
+    hours_str = f"{hours}ч " if hours != 0 else ""
+    return f"{hours_str}{minutes}м"
+
+def main():
+    print("Started main")
+
+    print(f"Result of average_rating call {average_rating(movies)}")
+    print(f"Result of catalog_age_stats call {catalog_age_stats(movies)}")
+    print(f"Result of duration_in_hours call {duration_in_hours(movies[0].get("duration_min"))}")
+
+if __name__ == "__main__":
+    main()
 
