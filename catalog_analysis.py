@@ -141,6 +141,19 @@ def genres_only_in_one(movies_a, movies_b):
     b = set([j for i in genres_b for j in i])
     return a - b
 
+def iter_high_rated(movies, min_rating=8.0):
+    for movie in movies:
+        if movie.get("rating") < min_rating:
+            continue
+        yield movie
+
+def demo_iterator(movies):
+    for movie in iter_high_rated(movies):
+        print(format_report_line(movie))
+
+def sum_films_with_more_than7_score(movies):
+    return sum(movie.get("duration_min") for movie in movies if movie.get("rating") > 7)
+
 def main():
     print("Started main")
 
@@ -169,6 +182,9 @@ def main():
     print(f"Result of all_genres call {all_genres(movies)}")
     print(f"Result of common_actors call {common_actors(movies[0], movies[3])}")
     print(f"Result of genres_only_in_one call {genres_only_in_one(movies[5:6], movies[:5])}")
+
+    print(f"Result of demo_iterator call {demo_iterator(movies)}")
+    print(f"Result of sum_films_with_more_than7_score call {sum_films_with_more_than7_score(movies)}")
 
 
 if __name__ == "__main__":
