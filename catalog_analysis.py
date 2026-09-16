@@ -52,7 +52,7 @@ def decade_label(year):
     match year:
         case n if n > 2020:
             return "новые"
-        case n if 2015 <= n < 2020:
+        case n if 2015 <= n <= 2020:
             return "недавние"
         case _:
             return "старые"
