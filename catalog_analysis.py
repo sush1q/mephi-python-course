@@ -57,6 +57,29 @@ def decade_label(year):
         case _:
             return "старые"
 
+def print_not_comedies(movies):
+    for movie in movies:
+        if "comedy" in movie.get("genres"):
+            continue
+        print(movie) 
+
+def print_first_masterpiece(movies):
+    i = 0
+    while i < len(movies):
+        if movies[i].get("rating") > 9.0:
+            print(f"Первый найденный шедевр: {movies[i]}")
+            break
+        i+=1
+    else:
+        print("Шедевров не найдено")
+
+def count_long_movies(movies, threshold=120):
+    count = 0
+    for movie in movies:
+        if movie.get("duration_min") > threshold:
+            count += 1
+    return count
+
 def main():
     print("Started main")
 
@@ -65,6 +88,11 @@ def main():
     print(f"Result of duration_in_hours call {duration_in_hours(movies[0].get("duration_min"))}")
     print(f"Result of rating_tier call {rating_tier(movies[0].get("rating"))}")
     print(f"Result of decade_label call {decade_label(movies[0].get("year"))}")
+    
+    print_not_comedies(movies)
+    print_first_masterpiece(movies)
+    print(f"Result of count_long_movies call {count_long_movies(movies)}")
+    
 
 if __name__ == "__main__":
     main()
