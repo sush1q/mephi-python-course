@@ -40,12 +40,31 @@ def duration_in_hours(minutes):
     hours_str = f"{hours}ч " if hours != 0 else ""
     return f"{hours_str}{minutes}м"
 
+def rating_tier(rating):
+    if rating >= 9:
+        return "шедевр"
+    elif rating >= 7:
+        return "хорошо"
+    else:
+        return "средне" if rating > 5 else "слабо"
+
+def decade_label(year):
+    match year:
+        case n if n > 2020:
+            return "новые"
+        case n if 2015 <= n < 2020:
+            return "недавние"
+        case _:
+            return "старые"
+
 def main():
     print("Started main")
 
     print(f"Result of average_rating call {average_rating(movies)}")
     print(f"Result of catalog_age_stats call {catalog_age_stats(movies)}")
     print(f"Result of duration_in_hours call {duration_in_hours(movies[0].get("duration_min"))}")
+    print(f"Result of rating_tier call {rating_tier(movies[0].get("rating"))}")
+    print(f"Result of decade_label call {decade_label(movies[0].get("year"))}")
 
 if __name__ == "__main__":
     main()
