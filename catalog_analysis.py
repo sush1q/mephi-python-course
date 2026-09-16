@@ -27,12 +27,14 @@ def average_rating(movies):
     rating_sum = sum([i.get("rating", 0) for i in movies])
     return round(rating_sum / len(movies), 1)
 
-def catalog_age_stats(movies, current_year=2026): # TODO: получается current_year не обязательна, по подсказке в заданию надо использовать для расчета возраста фильма, но поидее можно сортировкой обойтись
-    movies_sorted = sorted(movies, key=lambda x: x.get("year"))
-    average_year = math.ceil((movies_sorted[0].get("year") + movies_sorted[-1].get("year")) / 2)
-    average_age_film = list(filter(lambda x: x.get("year") == average_year, movies_sorted))
-    
-    return (movies_sorted[0], movies_sorted[-1], average_age_film[0])
+def catalog_age_stats(movies, current_year=2026):
+    ages = [current_year - movie.get("year") for movie in movies]
+
+    oldest_movie_age = max(ages)
+    newest_movie_age = min(ages)
+    average_movie_age = math.ceil(sum(ages) / len(ages))
+
+    return (oldest_movie_age, newest_movie_age, average_movie_age)
 
 def duration_in_hours(minutes):
     hours = minutes // 60
@@ -61,7 +63,7 @@ def print_not_comedies(movies):
     for movie in movies:
         if "comedy" in movie.get("genres"):
             continue
-        print(movie) 
+        print(movie.get("title")) 
 
 def print_first_masterpiece(movies):
     i = 0
@@ -93,11 +95,12 @@ def format_report_line(movie):
     return f'"{normalize_title(movie.get("title"))}" ({movie.get("year")}) - {movie.get("rating")}/10, {duration_in_hours(movie.get("duration_min"))}, жанры: {", ".join(sorted(movie.get("genres")))}'
 
 def titles_sorted_by_rating(movies):
-    return sorted(movies, key=lambda x: x.get("rating"), reverse=True)
+    sorted_movies = sorted(movies, key=lambda x: x.get("rating"), reverse=True)
+    return list(map(lambda x: x.get("title"), sorted_movies))
     
 def top_n_by_rating(movies, n=3):
     ret = []
-    sorted_movies = titles_sorted_by_rating(movies)
+    sorted_movies = sorted(movies, key=lambda x: x.get("rating"), reverse=True)
     for movie in sorted_movies:
         ret.append((movie.get("title"), movie.get("rating")))
         if (len(ret) >= n):
@@ -151,8 +154,22 @@ def demo_iterator(movies):
     for movie in iter_high_rated(movies):
         print(format_report_line(movie))
 
-def sum_films_with_more_than7_score(movies):
-    return sum(movie.get("duration_min") for movie in movies if movie.get("rating") > 7)
+def build_report(movies):
+    top_3 = [format_report_line(movie) for movie in sorted(movies, key=lambda x: x.get("rating"), reverse=True)[:3]]
+    genres_count = dict(sorted(count_by_genre(movies).items(), key=lambda x: x[1], reverse=True))
+    
+    report = f"""ОТЧЕТ ПО КАТАЛОГУ
+Средний рейтинг: {average_rating(movies)}
+Средний возраст фильмов: {catalog_age_stats(movies)[2]} лет
+
+Топ-3 фильма:
+{"\n".join("  " + line for line in top_3)}
+
+Фильмов по жанрам:
+{"\n".join(f"  {genre} — {count}" for genre, count in genres_count.items())}
+
+Все жанры каталога: {", ".join(sorted(all_genres(movies)))}"""
+    return report
 
 def main():
     print("Started main")
@@ -183,9 +200,13 @@ def main():
     print(f"Result of common_actors call {common_actors(movies[0], movies[3])}")
     print(f"Result of genres_only_in_one call {genres_only_in_one(movies[5:6], movies[:5])}")
 
-    print(f"Result of demo_iterator call {demo_iterator(movies)}")
-    print(f"Result of sum_films_with_more_than7_score call {sum_films_with_more_than7_score(movies)}")
+    demo_iterator(movies)
+    
+    print(f"Sum of films with score more than 7: {sum(movie.get("duration_min") for movie in movies if movie.get("rating") > 7)}")
 
+    print("=============")
+
+    print(build_report(movies))
 
 if __name__ == "__main__":
     main()
