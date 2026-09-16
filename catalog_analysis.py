@@ -92,6 +92,17 @@ def make_slug(title):
 def format_report_line(movie):
     return f'"{normalize_title(movie.get("title"))}" ({movie.get("year")}) - {movie.get("rating")}/10, {duration_in_hours(movie.get("duration_min"))}, жанры: {", ".join(sorted(movie.get("genres")))}'
 
+def titles_sorted_by_rating(movies):
+    return sorted(movies, key=lambda x: x.get("rating"), reverse=True)
+    
+def top_n_by_rating(movies, n=3):
+    ret = []
+    sorted_movies = titles_sorted_by_rating(movies)
+    for movie in sorted_movies:
+        ret.append((movie.get("title"), movie.get("rating")))
+        if (len(ret) >= n):
+            return ret
+    return ret
 
 def main():
     print("Started main")
@@ -111,6 +122,10 @@ def main():
     print(f"Result of make_slug call {make_slug(movies[2].get("title"))}")
     print(f"Result of format_report_line call {format_report_line(movies[0])}")
     
+    print(f"Result of titles_sorted_by_rating call {titles_sorted_by_rating(movies)}")
+    print(f"Result of top_n_by_rating call {top_n_by_rating(movies)}")
+
+
 
 if __name__ == "__main__":
     main()
